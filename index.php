@@ -59,20 +59,20 @@ if ($message != null) {
     // $fullname   = $user->getFirstName() . ' ' . $user->getLastName();
     try {
         if ($audio) {
-        log_debug($message);
-        // $file_url = get_file_link($audio->fileId);
-        $fileSizeString = ($audio->fileId / 1024) . 'MB';
+            log_debug($audio);
+            // $file_url = get_file_link($audio->fileId);
+            $fileSizeString = ($audio->fileId / 1024) . 'MB';
 
-        $caption =  '🎧 Music: ' . $audio->title
-                    . PHP_EOL . '👤 By: ' . $audio->performer
-                    . PHP_EOL . '🕒 Duration: ' . ($audio->duration / 60) . ':' ($audio->duration % 60)
-                    . PHP_EOL . '💾 Size: ' . $fileSizeString;
+            $caption = '🎧 Music: ' . $audio->title
+                . PHP_EOL . '👤 By: ' . $audio->performer
+                . PHP_EOL . '🕒 Duration: ' . ($audio->duration / 60) . ':'($audio->duration % 60)
+                . PHP_EOL . '💾 Size: ' . $fileSizeString;
 
-        $telegram->sendAudio([
-            'chat_id' => $admin_id,
-            'audio' => $audio->fileId,
-            'caption' => $caption,
-        ]);
+            $telegram->sendAudio([
+                'chat_id' => $admin_id,
+                'audio' => $audio->fileId,
+                'caption' => $caption,
+            ]);
         }
 
     } catch (Exception $e) {
