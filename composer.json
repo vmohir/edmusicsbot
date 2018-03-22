@@ -6,5 +6,7 @@
             "email": "email@vmoh.ir"
         }
     ],
-    "require": {}
+    "require": {
+        "irazasyed/telegram-bot-sdk": "^3.0"
+    }
 }
