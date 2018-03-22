@@ -10,62 +10,69 @@ use Telegram\Bot\Api;
 // connecting
 $telegram = new Api($token);
 // get user message
-$updates        = $telegram->getWebhookUpdates();
-$message        = $updates->getMessage();
+$updates = $telegram->getWebhookUpdates();
+$message = $updates->getMessage();
 $callback_query = $updates->getCallbackQuery();
 
 if (isset($_GET['debug'])) {
     log_debug($_GET['debug']);
 }
 
-if ($message != null) {
-    $chat       = $message->getChat();
-    $chat_id    = (int) $chat->getId();
-    $text       = $message->getText();
-    $message_id = $message->getMessageId();
-    $username   = $message->getFrom()->getUsername();
-    $user       = $message->getFrom();
-    $username   = $user->getUsername();
-    $fullname   = $user->getFirstName() . ' ' . $user->getLastName();
-    try {
-        
-        // $db = new Database($db_name, $db_user, $db_pass, $chat_id, $message_id);
-        
-        // vahid tests
-        /*if ($chat_id == 92454) {
-        }*/
-        $telegram->sendMessage([
-            'chat_id' => $admin_id,
-            'text' => 'vahidte'
-        ]);
+function get_file_link($file_id)
+{
+    global $telegram, $token;
+    $file = $telegram->getFile([
+        'file_id' => $file_id,
+    ]);
+    return 'https://api.telegram.org/file/bot' . $token . '/' . $file->getFilePath();
+}
+function make_exception_array($e)
+{
+    return [
+        'exception' => 'exception',
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'message' => $e->getMessage(),
+        'code' => $e->getCode(),
+        'trace' => $e->getTraceAsString(),
+    ];
+}
+function log_debug($data, $chat_id = 92454)
+{
+    $text = var_export($data, true);
+    global $telegram;
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $text,
+    ]);
+}
 
-        // $state = get_chat_state($text, $username, $fullname);
-        // // log_debug($state);
-        // if (!is_cancel_command($text, $chat_id, $message_id, $message)) {
-        //     // log_debug($state);
-        //     if (!handle_state($state, $chat_id, $text, $message_id, $message)) {
-        //         // log_debug($state);
-        //         if (!run_keyboard_button($text, $chat_id, $message_id, $message)) {
-        //             // log_debug($state);
-        //             run_commands($text, $chat_id, $message_id, $message);
-        //         }
-        //     }
-        // }
+if ($message != null) {
+    $chat = $message->getChat();
+    $chat_id = (int) $chat->getId();
+    // $text       = $message->getText();
+    $audio = $message->getAudio();
+    $message_id = $message->getMessageId();
+    // $username   = $message->getFrom()->getUsername();
+    // $user       = $message->getFrom();
+    // $username   = $user->getUsername();
+    // $fullname   = $user->getFirstName() . ' ' . $user->getLastName();
+    try {
+        log_debug($message);
+        // $file_url = get_file_link($audio->fileId);
+        $fileSizeString = ($audio->fileId / 1024) . 'MB';
+
+        $caption =  'Music: ' . $audio->title
+                    . PHP_EOL . 'By: ' . $audio->performer
+                    . PHP_EOL . 'Size: ' . $fileSizeString;
+
+        $telegram->sendAudio([
+            'chat_id' => $admin_id,
+            'audio' => $audio->fileId,
+            'caption' => $caption,
+        ]);
 
     } catch (Exception $e) {
         log_debug(make_exception_array($e));
     }
-// } elseif ($callback_query != null) {
-//     $id      = $callback_query->getId();
-//     $from    = $callback_query->getFrom();
-//     $chat_id = $from->getId();
-//     $message = $callback_query->getMessage();
-//     $data    = $callback_query->getData();
-
-//     try {
-//         $db = new Database($db_name, $db_user, $db_pass, $chat_id);
-//         run_callback_queries($id, $from, $message, $data);
-//     } catch (Exception $e) {
-//         log_debug(make_exception_array($e));
-//     }
 }
