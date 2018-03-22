@@ -58,6 +58,7 @@ if ($message != null) {
     // $username   = $user->getUsername();
     // $fullname   = $user->getFirstName() . ' ' . $user->getLastName();
     try {
+        if ($audio) {
         log_debug($message);
         // $file_url = get_file_link($audio->fileId);
         $fileSizeString = ($audio->fileId / 1024) . 'MB';
@@ -66,12 +67,13 @@ if ($message != null) {
                     . PHP_EOL . '👤 By: ' . $audio->performer
                     . PHP_EOL . '🕒 Duration: ' . ($audio->duration / 60) . ':' ($audio->duration % 60)
                     . PHP_EOL . '💾 Size: ' . $fileSizeString;
-                    
+
         $telegram->sendAudio([
             'chat_id' => $admin_id,
             'audio' => $audio->fileId,
             'caption' => $caption,
         ]);
+        }
 
     } catch (Exception $e) {
         log_debug(make_exception_array($e));
