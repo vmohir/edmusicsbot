@@ -65,7 +65,7 @@ if ($message != null) {
 
             $caption = '🎧 Music: ' . $audio->title
                 . PHP_EOL . '👤 By: ' . $audio->performer
-                . PHP_EOL . '🕒 Duration: ' . ($audio->duration / 60) . ':'($audio->duration % 60)
+                . PHP_EOL . '🕒 Duration: ' . ($audio->duration / 60) . ':' . ($audio->duration % 60)
                 . PHP_EOL . '💾 Size: ' . $fileSizeString;
 
             $telegram->sendAudio([
