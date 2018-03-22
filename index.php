@@ -69,7 +69,7 @@ if ($message != null) {
                 . PHP_EOL . '💾 Size: ' . $fileSizeString;
 
             $telegram->sendAudio([
-                'chat_id' => $admin_id,
+                'chat_id' => $channel_id,
                 'audio' => $audio->fileId,
                 'caption' => $caption,
             ]);
