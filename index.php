@@ -61,7 +61,7 @@ if ($message != null) {
         if ($audio) {
             log_debug($audio);
             // $file_url = get_file_link($audio->fileId);
-            $fileSizeString = ($audio->fileId / 1024) . 'MB';
+            $fileSizeString = ($audio->fileSize / 1024 / 1024) . 'MB';
 
             $caption = '🎧 Music: ' . $audio->title
                 . PHP_EOL . '👤 By: ' . $audio->performer
