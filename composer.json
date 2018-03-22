@@ -1,0 +1,10 @@
+{
+    "name": "vmoh/edmusicsbot",
+    "authors": [
+        {
+            "name": "Vahid Mohammadi",
+            "email": "email@vmoh.ir"
+        }
+    ],
+    "require": {}
+}
