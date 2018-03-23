@@ -61,14 +61,26 @@ if ($message != null) {
         if ($audio) {
             log_debug($audio);
             // $file_url = get_file_link($audio->fileId);
+            // log_debug($file_url);
             $fileSizeString = round(($audio->fileSize / 1024 / 1024), 2) . 'MB';
 
-            $caption = ($audio->title) ? '🎧 Music: ' . $audio->title : '🎧 Music'
-            . ($audio->performer) ? PHP_EOL . '👤 By: ' . $audio->performer : '👤'
-            . ($audio->duration) ? (PHP_EOL . '🕒 Duration: ' . ((int) floor($audio->duration / 60)) . ':' . ($audio->duration % 60)) : '🕒'
-                . PHP_EOL . '💾 Size: ' . $fileSizeString
-                . PHP_EOL . '🆔 @edmusics'
-            ;
+            $musicStr = ($audio->title ? '🎧 Music: ' . $audio->title : '🎧 Music');
+            $performerStr = ($audio->performer ? '👤 By: ' . $audio->performer : '👤');
+            $durationStr = ($audio->duration ? '🕒 Duration: ' . ((int) floor($audio->duration / 60)) . ':' . ($audio->duration % 60) : '🕒');
+            $sizeStr = '💾 Size: ' . $fileSizeString;
+            $idStr = '🆔 @edmusics';
+
+            $caption = $musicStr . PHP_EOL . $performerStr . PHP_EOL . $durationStr . PHP_EOL . $sizeStr . PHP_EOL . $idStr;
+
+            if (strlen($caption) > 200) {
+                $caption = $musicStr . PHP_EOL . $performerStr . PHP_EOL . $sizeStr . PHP_EOL . $idStr;
+            }
+            if (strlen($caption) > 200) {
+                $caption = $musicStr . PHP_EOL . $performerStr . PHP_EOL . $idStr;
+            }
+            if (strlen($caption) > 200) {
+                $caption = $musicStr . PHP_EOL . $idStr;
+            }
 
             $telegram->sendAudio([
                 'chat_id' => $channel_id,
