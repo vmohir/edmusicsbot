@@ -63,10 +63,12 @@ if ($message != null) {
             // $file_url = get_file_link($audio->fileId);
             $fileSizeString = round(($audio->fileSize / 1024 / 1024), 2) . 'MB';
 
-            $caption = '🎧 Music: ' . $audio->title
-                . PHP_EOL . '👤 By: ' . $audio->performer
-                . PHP_EOL . '🕒 Duration: ' . ((int) floor($audio->duration / 60)) . ':' . ($audio->duration % 60)
-                . PHP_EOL . '💾 Size: ' . $fileSizeString;
+            $caption = ($audio->title) ? '🎧 Music: ' . $audio->title : '🎧 Music'
+            . ($audio->performer) ? PHP_EOL . '👤 By: ' . $audio->performer : '👤'
+            . ($audio->duration) ? (PHP_EOL . '🕒 Duration: ' . ((int) floor($audio->duration / 60)) . ':' . ($audio->duration % 60)) : '🕒'
+                . PHP_EOL . '💾 Size: ' . $fileSizeString
+                . PHP_EOL . '🆔 @edmusics'
+            ;
 
             $telegram->sendAudio([
                 'chat_id' => $channel_id,
