@@ -6,17 +6,9 @@ require_once 'config.php';
 // file_get_contents('https://api.telegram.org/bot'.$token.'/sendMessage?chat_id=92454&text=debug');
 // require 'main-controller.php';
 use Telegram\Bot\Api;
-
-// connecting
-$telegram = new Api($token);
-// get user message
-$updates = $telegram->getWebhookUpdates();
-$message = $updates->getMessage();
-$callback_query = $updates->getCallbackQuery();
-
-if (isset($_GET['debug'])) {
-    log_debug($_GET['debug']);
-}
+// if (isset($_GET['debug'])) {
+//     dbg($_GET['debug']);
+// }
 
 function get_file_link($file_id)
 {
@@ -37,7 +29,7 @@ function make_exception_array($e)
         'trace' => $e->getTraceAsString(),
     ];
 }
-function log_debug($data, $chat_id = 92454)
+function dbg($data, $chat_id = 92454)
 {
     $text = var_export($data, true);
     global $telegram;
@@ -61,15 +53,44 @@ function titleFunction($title)
 {
     return trim(rstrings($title, ['FREE DOWNLOAD', '[FREE DOWNLOAD]', '[ORIGINAL MIX]', '[EXTENDED MIX]', 'ORIGINAL MIX', 'EXTENDED MIX']));
 }
+function makeInlineKeyboard($keyboard)
+{
+    return Telegram\Bot\Keyboard\Keyboard::make(['inline_keyboard' => $keyboard]);
+}
+function getLikeDislikeKeyboard($likes, $dislikes)
+{
+    $keyboard = [
+        [[
+            'text' => ((string) ($likes === 0 ? '' : $likes)) . ' 👍',
+            'callback_data' => json_encode(['type' => 'like', 'likes' => $likes, 'dislikes' => $dislikes]),
+        ], [
+            'text' => ((string) ($dislikes === 0 ? '' : $dislikes)) . ' 👎',
+            'callback_data' => json_encode(['type' => 'dislike', 'likes' => $likes, 'dislikes' => $dislikes]),
+        ]],
+    ];
+    return makeInlineKeyboard($keyboard);
+}
 
-if ($message != null) {
+/// begin
+//
+//
+//
+//
+
+$telegram = new Api($token);
+// get user message
+$updates = $telegram->getWebhookUpdates();
+$message = $updates->getMessage();
+$callback_query = $updates->getCallbackQuery();
+
+if ($callback_query === null && $message !== null) {
     $chat = $message->getChat();
     $chat_id = (int) $chat->getId();
     $audio = $message->getAudio();
     $message_id = $message->getMessageId();
     try {
         if ($audio) {
-            // log_debug($audio);
+            // dbg($audio);
             $fileSizeString = round(($audio->fileSize / 1024 / 1024), 2) . 'MB';
 
             $musicStr = ($audio->title ? '🎧 `Music:` ' . titleFunction($audio->title) : '`🎧 Music`');
@@ -90,15 +111,49 @@ if ($message != null) {
                 $caption = $musicStr . PHP_EOL . $idStr;
             }
 
+            $reply_markup = getLikeDislikeKeyboard(0, 0);
             $telegram->sendAudio([
                 'chat_id' => $channel_id,
                 'audio' => $audio->fileId,
                 'caption' => $caption,
                 'parse_mode' => 'markdown',
+                'reply_markup' => $reply_markup,
             ]);
+        } else {
+            // $telegram->sendMessage([
+            //     'chat_id' => 92454,
+            //     'text' => 'test',
+            // ]);
         }
 
     } catch (Exception $e) {
-        log_debug(make_exception_array($e));
+        dbg(make_exception_array($e));
     }
+}
+if ($callback_query != null) {
+    // dbg('wp');
+    $message = $callback_query->getMessage();
+    $data = $callback_query->getData();
+    $data = json_decode($data, true);
+
+    $likes = $data['likes'];
+    $dislikes = $data['dislikes'];
+    if ($data['type'] === 'like') {
+        $likes += 1;
+    }
+
+    if ($data['type'] === 'dislike') {
+        $dislikes -= 1;
+    }
+
+    // dbg($value);
+
+    $reply_markup = getLikeDislikeKeyboard($likes, $dislikes);
+    $telegram->editMessageReplyMarkup([
+        'chat_id' => $message->getChat()->getId(),
+        'message_id' => $message->getMessageId(),
+        'reply_markup' => $reply_markup,
+    ]);
+    // dbg($message);
+    // dbg($data);
 }
