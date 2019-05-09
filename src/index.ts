@@ -1,22 +1,17 @@
 import * as TelegramBotAPI from 'node-telegram-bot-api';
-import { TOKEN, CHANNEL_ID } from '../config';
+import { TOKEN, CHANNEL_ID, BOT_ADMIN_ID } from '../config';
 const bot = new TelegramBotAPI(TOKEN, { polling: true });
 
 bot.on('audio', (msg, metadata) => {
-  console.log('TCL: msg', msg);
-  //   const chat = msg.chat;
-  //   const chat_id = chat.id;
   const audio = msg.audio;
-  //   const $message_id = msg.message_id;
   try {
     if (audio) {
-      // dbg(audio);
       const fileSizeString = `${Math.round((audio.file_size / 1024 / 1024) * 100) / 100}MB`;
 
-      const musicStr = audio.title ? '🎧 `Music:` ' + titleFunction(audio.title) : '`🎧 Music`';
-      const performerStr = audio.performer ? '👤 `By:` ' + audio.performer : '`👤 By:` Unknown';
-      const durationStr = '🕒 `Duration:` ' + Math.floor(audio.duration / 60) + ':' + (audio.duration % 60);
-      const sizeStr = `💾 \`Size:\`${fileSizeString}`;
+      const musicStr = `🎧 Music: ${titleFunction(audio.title)}`;
+      const performerStr = `👤 By: ${audio.performer || 'UNKNOWN'}`;
+      const durationStr = `🕒 Duration: ${Math.floor(audio.duration / 60)}:${audio.duration % 60}`;
+      const sizeStr = `💾 Size: ${fileSizeString}`;
       const idStr = '🆔 @edmusics';
 
       let caption = `${musicStr}
@@ -42,19 +37,13 @@ ${idStr}`;
       }
 
       // const reply_markup = getLikeDislikeKeyboard(0, 0);
-      console.log('TCL: CHANNEL_ID', CHANNEL_ID, caption);
-      bot.sendAudio(CHANNEL_ID, audio.file_id, { caption }).then(x => {
-        console.log('TCL: x', x);
-      });
+      bot.sendAudio(CHANNEL_ID, audio.file_id, { caption, title: 'vahid' }).then(x => {});
       // 'parse_mode' => 'markdown'
     } else {
-      // $telegram->sendMessage([
-      //     'chat_id' => 92454,
-      //     'text' => 'test',
-      // ]);
+      bot.sendMessage(BOT_ADMIN_ID, 'send an audio');
     }
   } catch (error) {
-    // dbg(make_exception_array($e));
+    console.error('captured error', error);
   }
 });
 
@@ -86,8 +75,9 @@ ${idStr}`;
 //     ]);
 // }
 const removeStrings = (str: string, strings: string[]) => strings.reduce(s => `${str.replace(s, '')}`, '');
-const titleFunction = ($title: string) => {
-  return removeStrings($title, [
+const titleFunction = (title: string | undefined): string => {
+  if (!title) return '';
+  return removeStrings(title, [
     'FREE DOWNLOAD',
     '[FREE DOWNLOAD]',
     '[ORIGINAL MIX]',
