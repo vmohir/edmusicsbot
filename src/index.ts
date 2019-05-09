@@ -3,6 +3,7 @@ import { TOKEN, CHANNEL_ID } from '../config';
 const bot = new TelegramBotAPI(TOKEN, { polling: true });
 
 bot.on('audio', (msg, metadata) => {
+  console.log('TCL: msg', msg);
   //   const chat = msg.chat;
   //   const chat_id = chat.id;
   const audio = msg.audio;
