@@ -1,6 +1,5 @@
 {
   "uid": "edmusicsbot",
   "append": true,
-  "script": "src/index.ts",
-  "command": "ts-node"
+  "script": "dist/src/index.js"
 }
