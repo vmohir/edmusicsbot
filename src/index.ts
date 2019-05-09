@@ -6,7 +6,7 @@ bot.on('audio', (msg, metadata) => {
   const audio = msg.audio;
   try {
     if (audio) {
-      const fileSizeString = `${Math.round((audio.file_size / 1024 / 1024) * 100) / 100}MB`;
+      const fileSizeString = `${Math.round(((audio.file_size || 0) / 1024 / 1024) * 100) / 100}MB`;
 
       const musicStr = `🎧 Music: ${titleFunction(audio.title)}`;
       const performerStr = `👤 By: ${audio.performer || 'UNKNOWN'}`;

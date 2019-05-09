@@ -1,5 +1,6 @@
 {
   "uid": "edmusicsbot",
   "append": true,
-  "command": "npm run build"
+  "script": "src/index.ts",
+  "command": "ts-node"
 }
