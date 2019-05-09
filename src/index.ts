@@ -42,7 +42,10 @@ ${idStr}`;
       }
 
       // const reply_markup = getLikeDislikeKeyboard(0, 0);
-      bot.sendAudio(CHANNEL_ID, audio.file_id, { caption });
+      console.log('TCL: CHANNEL_ID', CHANNEL_ID, caption);
+      bot.sendAudio(CHANNEL_ID, audio.file_id, { caption }).then(x => {
+        console.log('TCL: x', x);
+      });
       // 'parse_mode' => 'markdown'
     } else {
       // $telegram->sendMessage([
