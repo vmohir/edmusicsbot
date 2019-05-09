@@ -74,7 +74,7 @@ ${idStr}`;
 //         'text' => $text,
 //     ]);
 // }
-const removeStrings = (str: string, strings: string[]) => strings.reduce(s => `${str.replace(s, '')}`, '');
+const removeStrings = (str: string, strings: string[]) => strings.reduce((result, s) => result.replace(s, ''), str);
 const titleFunction = (title: string | undefined): string => {
   if (!title) return '';
   return removeStrings(title, [
