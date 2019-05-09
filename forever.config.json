@@ -1,0 +1,5 @@
+{
+  "uid": "edmusicsbot",
+  "append": true,
+  "command": "npm run build"
+}
