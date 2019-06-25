@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
+    "start": "ts-node-dev -r tsconfig-paths/register --ignore-watch node_modules --no-notify ./src/index.ts",
     "build": "tsc"
   },
   "repository": {
@@ -19,11 +19,15 @@
   },
   "homepage": "https://github.com/gvmohzibat/edmusicsbot#readme",
   "devDependencies": {
+    "@types/cron": "^1.7.1",
     "@types/node-telegram-bot-api": "^0.31.0",
     "ts-node": "^8.1.0",
+    "ts-node-dev": "^1.0.0-pre.40",
+    "tsconfig-paths": "^3.8.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "cron": "^1.7.1",
     "node-telegram-bot-api": "^0.30.0"
   }
 }
