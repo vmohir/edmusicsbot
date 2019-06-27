@@ -4,9 +4,13 @@
   "description": "edmusic bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -r dist && tsc",
     "start": "ts-node-dev -r tsconfig-paths/register --ignore-watch node_modules --no-notify ./src/index.ts",
-    "build": "tsc"
+    "debug": "ts-node-dev -r tsconfig-paths/register --ignore-watch node_modules --inspect-brk=9229 ./src/server.ts",
+    "serve": "nodemon -r ./tsconfig-paths-bootstrap.js ./dist/server.js",
+    "client-deploy": "git checkout deploy && git merge master && npm run build && git add --all && git commit -m \"build\" && git push && git checkout master",
+    "server-deploy": "git pull && forever stop edmusicsbot && forever start forever.config.json",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
