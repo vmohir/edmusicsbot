@@ -7,7 +7,7 @@ class Scheduler {
   }
 
   private setupScheduler() {
-    new Cron.CronJob('0 0 6 * * *', this.onEveryDaySixOclock).start();
+    new Cron.CronJob('0 0 7 * * *', this.onEveryDaySixOclock).start();
   }
 
   private onEveryDaySixOclock() {
