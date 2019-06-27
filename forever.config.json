@@ -1,6 +1,6 @@
 {
   "uid": "edmusicsbot",
   "append": true,
-  "script": "dist/index.js",
+  "script": "dist/src/index.js",
   "command": "node -r ./tsconfig-paths-bootstrap.js"
 }
