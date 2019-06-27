@@ -7,7 +7,7 @@ var Scheduler = /** @class */ (function () {
         this.setupScheduler();
     }
     Scheduler.prototype.setupScheduler = function () {
-        new Cron.CronJob('0 0 6 * * *', this.onEveryDaySixOclock).start();
+        new Cron.CronJob('0 0 7 * * *', this.onEveryDaySixOclock).start();
     };
     Scheduler.prototype.onEveryDaySixOclock = function () {
         telegram_bot_1.default.sendAtMostTwoMusics();
