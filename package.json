@@ -9,7 +9,7 @@
     "debug": "ts-node-dev -r tsconfig-paths/register --ignore-watch node_modules --inspect-brk=9229 ./src/server.ts",
     "serve": "nodemon -r ./tsconfig-paths-bootstrap.js ./dist/src/index.js",
     "client-deploy": "git push",
-    "server-deploy": "git pull && forever stop edmusicsbot && git merge master && npm run build && forever start forever.config.json",
+    "server-deploy": "git pull && forever stop edmusicsbot && npm run build && forever start forever.config.json",
     "postversion": "git push && git push --tags"
   },
   "repository": {
