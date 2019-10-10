@@ -1,6 +1,6 @@
 {
   "name": "edmusicsbot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "edmusic bot",
   "main": "index.js",
   "scripts": {
