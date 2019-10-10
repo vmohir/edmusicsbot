@@ -30,6 +30,7 @@ class TelegramBotHandlerClass {
 
         this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title));
         console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
+        this.bot.sendMessage(msg.chat.id, `Done! Got this: ${audio.title}`);
       } else {
         this.bot.sendMessage(BOT_ADMIN_ID, 'Please send an audio');
       }
