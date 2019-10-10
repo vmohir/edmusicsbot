@@ -35,9 +35,11 @@ class TelegramBotHandlerClass {
 
         this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title));
         console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
+
         this.bot.sendMessage(msg.chat.id, `Done! Got this: ${audio.title}`).then(data => {
           setTimeout(() => {
-            this.bot.deleteMessage(data.chat.id, data.message_id.toString());
+            this.bot.deleteMessage(data.chat.id, data.message_id.toString()); // remove bot message
+            this.bot.deleteMessage(msg.chat.id, msg.message_id.toString()); // remove the music
           }, 4000);
         });
       } else {
