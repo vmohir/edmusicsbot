@@ -9,6 +9,11 @@ class TelegramBotHandlerClass {
     this.setupHandlers();
   }
   private setupHandlers() {
+    this.bot.on('text', (msg, metadata) => {
+      setTimeout(() => {
+        this.bot.deleteMessage(msg.chat.id, msg.message_id.toString());
+      }, 10000);
+    });
     this.bot.on('audio', (msg, metadata) => this.handleAudioInput(msg));
   }
 
@@ -30,7 +35,9 @@ class TelegramBotHandlerClass {
 
         this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title));
         console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
-        this.bot.sendMessage(msg.chat.id, `Done! Got this: ${audio.title}`);
+        this.bot.sendMessage(msg.chat.id, `Done! Got this: ${audio.title}`).then(data => {
+          this.bot.deleteMessage(data.chat.id, data.message_id.toString());
+        });
       } else {
         this.bot.sendMessage(BOT_ADMIN_ID, 'Please send an audio');
       }
