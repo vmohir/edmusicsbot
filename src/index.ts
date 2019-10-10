@@ -1,5 +1,6 @@
 import TelegramBot from 'telegram-bot/telegram-bot';
 import Cron = require('cron');
+console.log('\x1b[33m');
 
 class Scheduler {
   constructor() {

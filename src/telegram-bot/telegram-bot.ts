@@ -28,7 +28,7 @@ class TelegramBotHandlerClass {
         const caption = this.createCaption(musicStr, performerStr, durationStr, sizeStr, idStr);
         console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> caption', caption);
 
-        this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption));
+        this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title));
         console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
       } else {
         this.bot.sendMessage(BOT_ADMIN_ID, 'Please send an audio');
@@ -40,7 +40,7 @@ class TelegramBotHandlerClass {
 
   sendAtMostTwoMusics() {
     this.sendOneMusic();
-    this.sendOneMusic();
+    // this.sendOneMusic();
   }
 
   sendBufferMusicsToAdmin() {
@@ -53,8 +53,11 @@ class TelegramBotHandlerClass {
   }
 
   private sendOneMusic() {
-    const queue = this.channelMusicsQueue;
-    const musicMsg = queue.pop();
+    const musicMsg = this.channelMusicsQueue.pop();
+    this.bot.sendMessage(
+      BOT_ADMIN_ID,
+      `اینا رو هنوز نفرستادم ${this.channelMusicsQueue.reduce((res, musicMsg) => `${musicMsg.audioTitle}\n${res}`, '')}`
+    );
     if (!musicMsg) return;
 
     this.bot.sendAudio(musicMsg.chatId, musicMsg.fileId, { caption: musicMsg.caption });
@@ -88,5 +91,5 @@ const TelegramBot = new TelegramBotHandlerClass();
 export default TelegramBot;
 
 class MusicMsg {
-  constructor(public chatId: string, public fileId: string, public caption: string) {}
+  constructor(public chatId: string, public fileId: string, public caption: string, public audioTitle: string | undefined) {}
 }
