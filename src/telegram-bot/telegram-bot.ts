@@ -11,6 +11,7 @@ class TelegramBotHandlerClass {
 
   private readonly AUDIO_COUNT = '/audiocount';
   private readonly SEND_NOW = '/sendnow';
+  private readonly WHAT_IS_NOT_SENT = '/whatisnotsent';
 
   constructor() {
     this.setupHandlers();
@@ -22,6 +23,7 @@ class TelegramBotHandlerClass {
       if (msg.chat.id.toString() === BOT_ADMIN_ID) {
         if (text?.startsWith(this.AUDIO_COUNT)) this.handleAudioCountCommand(msg);
         if (text?.startsWith(this.SEND_NOW)) this.handleSendNowCommand(msg);
+        if (text?.startsWith(this.WHAT_IS_NOT_SENT)) this.handleWhatIsNotSentCommand(msg);
         return;
       }
       setTimeout(() => this.bot.deleteMessage(msg.chat.id, msg.message_id.toString()), 10000);
@@ -29,6 +31,9 @@ class TelegramBotHandlerClass {
     this.bot.on('audio', msg => this.handleAudioInput(msg));
   }
 
+  private handleWhatIsNotSentCommand(msg: TelegramBotAPI.Message) {
+    this.sendWhatIsNotSentToAdmin();
+  }
   private handleSendNowCommand(msg: TelegramBotAPI.Message) {
     this.sendOneMusicToChannel();
   }
@@ -81,15 +86,19 @@ class TelegramBotHandlerClass {
 
   private sendOneMusicToChannel() {
     const musicMsg = this.channelMusicsQueue.pop();
-    this.bot.sendMessage(
-      BOT_ADMIN_ID,
-      `اینا رو هنوز نفرستادم ${this.channelMusicsQueue.reduce((res, musicMsg) => `${musicMsg.audioTitle}\n${res}`, '')}`
-    );
+    this.sendWhatIsNotSentToAdmin();
     if (!musicMsg) return;
 
     this.bot.sendAudio(musicMsg.chatId, musicMsg.fileId, { caption: musicMsg.caption }).then(data => {
       this.bot.editMessageCaption('اینو فرستادم', { chat_id: musicMsg.sourceChatId, message_id: musicMsg.sourceMessageId }); // remove the music
     });
+  }
+
+  private sendWhatIsNotSentToAdmin() {
+    this.bot.sendMessage(
+      BOT_ADMIN_ID,
+      `اینا رو هنوز نفرستادم ${this.channelMusicsQueue.reduce((res, musicMsg) => `${musicMsg.audioTitle}\n${res}`, '')}`
+    );
   }
 
   private getAudioCaption(audio: TelegramBotAPI.Audio) {
