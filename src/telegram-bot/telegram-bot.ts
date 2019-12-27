@@ -7,14 +7,36 @@ const CHANNEL_ID_STRING = '🆔 @edmusics';
 class TelegramBotHandlerClass {
   private bot = new TelegramBotAPI(TOKEN, { polling: true });
   channelMusicsQueue: MusicMsg[] = [];
+  channelAudioCount = 1;
+
+  private readonly AUDIO_COUNT = '/audiocount';
+  private readonly SEND_NOW = '/sendnow';
+
   constructor() {
     this.setupHandlers();
   }
+
   private setupHandlers() {
-    this.bot.on('text', (msg, metadata) => {
+    this.bot.on('text', msg => {
+      const { text } = msg;
+      if (msg.chat.id.toString() === BOT_ADMIN_ID) {
+        if (text?.startsWith(this.AUDIO_COUNT)) this.handleAudioCountCommand(msg);
+        if (text?.startsWith(this.SEND_NOW)) this.handleSendNowCommand(msg);
+        return;
+      }
       setTimeout(() => this.bot.deleteMessage(msg.chat.id, msg.message_id.toString()), 10000);
     });
-    this.bot.on('audio', (msg, metadata) => this.handleAudioInput(msg));
+    this.bot.on('audio', msg => this.handleAudioInput(msg));
+  }
+
+  private handleSendNowCommand(msg: TelegramBotAPI.Message) {
+    this.sendOneMusicToChannel();
+  }
+  private handleAudioCountCommand(msg: TelegramBotAPI.Message) {
+    const { text } = msg;
+    if (!text) return;
+    this.channelAudioCount = parseInt(text.substring(this.AUDIO_COUNT.length + 1), 10) || 1;
+    this.bot.sendMessage(msg.chat.id, `تعداد آهنگ در روز تنظیم شد به: ${this.channelAudioCount}`);
   }
 
   private handleAudioInput(msg: TelegramBotAPI.Message) {
@@ -29,20 +51,24 @@ class TelegramBotHandlerClass {
       const caption = this.getAudioCaption(audio);
       // console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> caption', caption);
 
-      this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title, msg.chat.id, msg.message_id));
       // console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
 
-      this.bot.sendMessage(msg.chat.id, `Done! Got this: ${audio.title}`).then(data => {
-        setTimeout(() => this.bot.deleteMessage(data.chat.id, data.message_id.toString()), 4000);
-      });
+      this.bot
+        .sendAudio(msg.chat.id, audio.file_id, { caption: `Done! Got this: ${audio.title}-${audio.performer}`, disable_notification: true })
+        .then(data => {
+          this.bot.deleteMessage(msg.chat.id, msg.message_id.toString()); // remove the music
+          this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title, data.chat.id, data.message_id));
+          setTimeout(() => this.bot.deleteMessage(data.chat.id, data.message_id.toString()), 4000);
+        });
     } catch (error) {
       console.error('captured error', error);
     }
   }
 
-  sendAtMostTwoMusics() {
-    this.sendOneMusic();
-    // this.sendOneMusic();
+  sendMusicsToChannel() {
+    for (let i = 0; i < this.channelAudioCount; i++) {
+      this.sendOneMusicToChannel();
+    }
   }
 
   sendBufferMusicsToAdmin() {
@@ -54,7 +80,7 @@ class TelegramBotHandlerClass {
     });
   }
 
-  private sendOneMusic() {
+  private sendOneMusicToChannel() {
     const musicMsg = this.channelMusicsQueue.pop();
     this.bot.sendMessage(
       BOT_ADMIN_ID,
@@ -63,7 +89,7 @@ class TelegramBotHandlerClass {
     if (!musicMsg) return;
 
     this.bot.sendAudio(musicMsg.chatId, musicMsg.fileId, { caption: musicMsg.caption }).then(data => {
-      this.bot.deleteMessage(musicMsg.sourceChatId, musicMsg.sourceMessageId.toString()); // remove the music
+      this.bot.editMessageCaption('اینو فرستادم', { chat_id: musicMsg.sourceChatId, message_id: musicMsg.sourceMessageId }); // remove the music
     });
   }
 

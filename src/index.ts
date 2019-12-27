@@ -12,7 +12,7 @@ class Scheduler {
   }
 
   private onEveryDaySixOclock() {
-    TelegramBot.sendAtMostTwoMusics();
+    TelegramBot.sendMusicsToChannel();
   }
 }
 
