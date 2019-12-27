@@ -58,7 +58,6 @@ class TelegramBotHandlerClass {
         .then(data => {
           this.bot.deleteMessage(msg.chat.id, msg.message_id.toString()); // remove the music
           this.channelMusicsQueue.push(new MusicMsg(CHANNEL_ID, audio.file_id, caption, audio.title, data.chat.id, data.message_id));
-          setTimeout(() => this.bot.deleteMessage(data.chat.id, data.message_id.toString()), 4000);
         });
     } catch (error) {
       console.error('captured error', error);
