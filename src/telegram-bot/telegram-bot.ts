@@ -46,7 +46,6 @@ class TelegramBotHandlerClass {
 
   private handleAudioInput(msg: TelegramBotAPI.Message) {
     const audio = msg.audio;
-    // console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> msg', audio);
     try {
       if (!audio) {
         this.bot.sendMessage(BOT_ADMIN_ID, 'Please send an audio');
@@ -54,9 +53,6 @@ class TelegramBotHandlerClass {
       }
 
       const caption = this.getAudioCaption(audio);
-      // console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> caption', caption);
-
-      // console.log('TCL: TelegramBotHandlerClass -> handleAudioInput -> this.channelMusicsQueue', this.channelMusicsQueue);
 
       this.bot
         .sendAudio(msg.chat.id, audio.file_id, { caption: `Done! Got this: ${audio.title}-${audio.performer}`, disable_notification: true })
