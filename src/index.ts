@@ -8,7 +8,7 @@ console.log('\x1b[33m');
 
 class Scheduler {
   constructor() {
-    if (isDev) {
+    if (!isDev) {
       this.setupScheduler();
     }
   }

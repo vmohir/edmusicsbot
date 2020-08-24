@@ -15,7 +15,7 @@ class TelegramBotHandlerClass {
   private setupHandlers() {
     console.log('BOT IS READY');
     Tlg.bot.on('polling_error', error => {
-      // console.error('bot error', error);
+      console.error('bot error', error);
     });
     Tlg.bot.on('text', msg => {
       const { text } = msg;
