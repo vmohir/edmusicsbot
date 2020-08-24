@@ -4,7 +4,6 @@ import { isDev } from '../config';
 import Cron = require('cron');
 
 process.stdin.resume();
-console.log('\x1b[33m');
 
 class Scheduler {
   constructor() {

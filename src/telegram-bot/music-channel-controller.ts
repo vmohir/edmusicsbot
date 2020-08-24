@@ -28,7 +28,6 @@ class MusicChannelControllerClass {
     if (!musicMsg) return;
 
     const { chatId, imageBuffer, audioCaption, photoCaption, fileId, sourceChatId, sourceMessageId } = musicMsg;
-    console.log('TelegramBotHandlerClass -> sendOneMusicToChannel -> imageData', chatId, !!imageBuffer);
 
     if (imageBuffer) {
       const sentPhoto = await Tlg.bot.sendPhoto(chatId, imageBuffer, { caption: photoCaption });
@@ -55,7 +54,6 @@ class MusicChannelControllerClass {
 
   async handleAudioFromAdmin(msg: TelegramBotAPI.Message) {
     const audio = msg.audio;
-    console.log('TelegramBotHandlerClass -> handleAudioInput -> audio', audio);
     try {
       if (!audio) {
         Tlg.bot.sendMessage(BOT_ADMIN_ID, 'Please send an audio');

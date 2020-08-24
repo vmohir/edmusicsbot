@@ -13,13 +13,11 @@ class TelegramBotHandlerClass {
   }
 
   private setupHandlers() {
-    console.log('BOT IS READY');
     Tlg.bot.on('polling_error', error => {
       console.error('bot error', error);
     });
     Tlg.bot.on('text', msg => {
       const { text } = msg;
-      console.log('TelegramBotHandlerClass -> setupHandlers -> text', text);
       if (msg.chat.id.toString() === BOT_ADMIN_ID) {
         if (text?.startsWith(this.AUDIO_COUNT)) this.handleAudioCountCommand(msg);
         if (text?.startsWith(this.SEND_NOW)) this.handleSendNowCommand(msg);

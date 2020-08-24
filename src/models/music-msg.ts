@@ -40,10 +40,8 @@ export class MusicMsg {
   private async getData() {
     const fileLink = await Tlg.bot.getFileLink(this.fileId);
 
-    console.log('TelegramBotHandlerClass -> handleAudioInput -> data', fileLink);
     const imageData = await AudioUtils.readTags(fileLink);
     this.imageBuffer = MiscUtils.arrayByteToBuffer(imageData);
-    console.log('MusicMsg -> getData -> this.imageBuffer', this.imageBuffer);
 
     if (this.imageBuffer) {
       this.photoCaption = TelegramMessageTemplates.getCompleteAudioInfoCaption(this.audio);
