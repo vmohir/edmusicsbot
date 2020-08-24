@@ -1,4 +1,4 @@
-class UtilitiesClass {
+class MiscUtilClass {
   private removeStrings = (str: string, strings: string[]) => strings.reduce((result, s) => result.replace(s, ''), str);
 
   titleFunction = (title: string | undefined): string => {
@@ -9,10 +9,15 @@ class UtilitiesClass {
       '[ORIGINAL MIX]',
       '[EXTENDED MIX]',
       'ORIGINAL MIX',
-      'EXTENDED MIX'
+      'EXTENDED MIX',
     ]).trim();
   };
+
+  arrayByteToBuffer(buffer: number[] | null | undefined) {
+    if (!buffer) return;
+    return Buffer.from(buffer);
+  }
 }
 
-const Utilities = new UtilitiesClass();
-export default Utilities;
+const MiscUtils = new MiscUtilClass();
+export default MiscUtils;

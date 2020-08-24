@@ -1,10 +1,16 @@
 import TelegramBot from 'telegram-bot/telegram-bot';
+import { MusicChannelController } from 'telegram-bot/music-channel-controller';
+import { isDev } from '../config';
 import Cron = require('cron');
+
+process.stdin.resume();
 console.log('\x1b[33m');
 
 class Scheduler {
   constructor() {
-    this.setupScheduler();
+    if (isDev) {
+      this.setupScheduler();
+    }
   }
 
   private setupScheduler() {
@@ -12,12 +18,12 @@ class Scheduler {
   }
 
   private onEveryDaySixOclock() {
-    TelegramBot.sendMusicsToChannel();
+    MusicChannelController.sendMusicsToChannel();
   }
 }
 
 const exitHandler = () => {
-  TelegramBot.sendBufferMusicsToAdmin();
+  TelegramBot.onExit();
 };
 
 //do something when app is closing
