@@ -23,8 +23,7 @@ class MusicChannelControllerClass {
   }
 
   async sendOneMusicToChannel() {
-    const musicMsg = this.channelMusicsQueue.pop();
-    this.sendWhatIsNotSentToAdmin();
+    const musicMsg = this.channelMusicsQueue[0];
     if (!musicMsg) return;
 
     const { chatId, imageBuffer, audioCaption, photoCaption, fileId, sourceChatId, sourceMessageId } = musicMsg;
@@ -37,6 +36,8 @@ class MusicChannelControllerClass {
     }
 
     // remove the music
+    this.channelMusicsQueue = this.channelMusicsQueue.slice(1);
+    this.sendWhatIsNotSentToAdmin();
     Tlg.bot.editMessageCaption('اینو فرستادم', { chat_id: sourceChatId, message_id: sourceMessageId });
   }
 
