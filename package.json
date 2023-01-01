@@ -33,7 +33,7 @@
     "cron": "^1.7.2",
     "jsmediatags": "^3.9.3",
     "node-telegram-bot-api": "^0.30.0",
-    "tsconfig-paths": "^3.9.0",
+    "tsconfig-paths": "^3.10.1",
     "typescript": "^3.7.4"
   }
 }
